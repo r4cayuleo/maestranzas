@@ -1,0 +1,116 @@
+{% extends 'inventory/base.html' %}
+
+{% block title %}Gerente de Inventario{% endblock %}
+
+{% block content %}
+<h2>Gerente de Inventario</h2>
+
+<h3>Búsqueda de productos por ubicación en el almacén</h3>
+<form method="get" action="{% url 'gerente_inventario' %}">
+    {{ search_form.as_p }}
+    <button type="submit">Buscar</button>
+</form>
+
+{% if search_results %}
+    <h3>Resultados de la Búsqueda</h3>
+    {% if search_results %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Descripción</th>
+                    <th>Cantidad</th>
+                    <th>Ubicación</th>
+                    <th>Registrado por</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for material in search_results %}
+                <tr>
+                    <td>{{ material.name }}</td>
+                    <td>{{ material.description }}</td>
+                    <td>{{ material.quantity }}</td>
+                    <td>{{ material.location.name }}</td>
+                    <td>{{ material.added_by.username }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No se encontraron productos.</p>
+    {% endif %}
+{% endif %}
+
+<h3>Visualización de cantidad por ubicación</h3>
+<table>
+    <thead>
+        <tr>
+            <th>Ubicación</th>
+            <th>Cantidad Total</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for location in locations %}
+        <tr>
+            <td>{{ location.name }}</td>
+            <td>{{ location.total_quantity }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<h3>Gestión de Ubicaciones</h3>
+<form method="post">
+    {% csrf_token %}
+    {{ location_form.as_p }}
+    <button type="submit" name="add_location">Agregar Ubicación</button>
+    {% if location_form.instance.id %}
+    <button type="submit" name="edit_location">Actualizar Ubicación</button>
+    <input type="hidden" name="location_id" value="{{ location_form.instance.id }}">
+    {% endif %}
+</form>
+
+<h3>Eliminar Ubicaciones</h3>
+<form method="post">
+    {% csrf_token %}
+    <select name="location_id">
+        {% for location in locations %}
+        <option value="{{ location.id }}">{{ location.name }}</option>
+        {% endfor %}
+    </select>
+    <button type="submit" name="delete_location">Eliminar Ubicación</button>
+</form>
+
+<h3>Generación de Informes de Movimientos de Productos</h3>
+<form method="post" action="{% url 'generate_report' %}">
+    {% csrf_token %}
+    <input type="hidden" name="report_type" value="movements">
+    <button type="submit" name="generate_report">Generar Informe</button>
+</form>
+
+{% if report %}
+    <h3>Informe de Movimientos de Productos</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Producto</th>
+                <th>Descripción</th>
+                <th>Cantidad</th>
+                <th>Ubicación</th>
+                <th>Fecha</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in report %}
+            <tr>
+                <td>{{ item.name }}</td>
+                <td>{{ item.description }}</td>
+                <td>{{ item.quantity }}</td>
+                <td>{{ item.location.name }}</td>
+                <td>{{ item.date_added }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endif %}
+{% endblock %}

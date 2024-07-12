@@ -1,0 +1,16 @@
+{% extends 'inventory/base.html' %}
+
+{% block title %}Perfil{% endblock %}
+
+{% block content %}
+<h2>Perfil de Usuario</h2>
+<p><strong>Nombre:</strong> {{ user.get_full_name }}</p>
+<p><strong>Usuario:</strong> {{ user.username }}</p>
+<p><strong>Correo Electrónico:</strong> {{ user.email }}</p>
+<h3>Permisos</h3>
+<ul>
+    {% for perm in permissions %}
+        <li>{{ perm }}</li>
+    {% endfor %}
+</ul>
+{% endblock %}

@@ -1,0 +1,65 @@
+{% extends 'inventory/base.html' %}
+
+{% block title %}Analista de Inventario{% endblock %}
+
+{% block content %}
+<h2>Analista de Inventario</h2>
+
+<h3>Generar Informes Históricos</h3>
+<form method="post" action="{% url 'analista_inventario' %}">
+    {% csrf_token %}
+    <input type="hidden" name="report_type" value="historical">
+    <button type="submit" name="view_report">Ver Informe</button>
+    <button type="submit" name="download_report">Descargar Informe</button>
+</form>
+
+<h3>Generar Informes por Categoría de Producto</h3>
+<form method="post" action="{% url 'analista_inventario' %}">
+    {% csrf_token %}
+    <input type="hidden" name="report_type" value="category">
+    <button type="submit" name="view_report">Ver Informe</button>
+    <button type="submit" name="download_report">Descargar Informe</button>
+</form>
+
+<h3>Generar Informes por Criterios Específicos</h3>
+<form method="get" action="{% url 'analista_inventario' %}">
+    {{ search_form.as_p }}
+    <button type="submit">Buscar</button>
+</form>
+<form method="post" action="{% url 'analista_inventario' %}">
+    {% csrf_token %}
+    <input type="hidden" name="report_type" value="specific">
+    <button type="submit" name="view_report">Ver Informe</button>
+    <button type="submit" name="download_report">Descargar Informe</button>
+</form>
+
+<h3>Estado de Inventario</h3>
+<p>Total de materiales: {{ total_quantity }}</p>
+
+<h3>Control de Calidad de Materiales</h3>
+<table>
+    <thead>
+        <tr>
+            <th>Nombre</th>
+            <th>Descripción</th>
+            <th>Cantidad</th>
+            <th>Ubicación</th>
+            <th>Registrado por</th>
+            <th>Estado</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for material in selected_materials %}
+        <tr>
+            <td>{{ material.name }}</td>
+            <td>{{ material.description }}</td>
+            <td>{{ material.quantity }}</td>
+            <td>{{ material.location.name }}</td>
+            <td>{{ material.added_by.username }}</td>
+            <td>{{ material.condition }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}

@@ -1,0 +1,108 @@
+body {
+    background-color: #fff8dc; /* Color de fondo blanco */
+    font-family: Arial, sans-serif;
+    color: #000; /* Color del texto negro */
+    margin: 0;
+}
+
+.navbar {
+    background-color: #ffeb3b; /* Color amarillo para la barra de navegación */
+    overflow: hidden;
+    padding: 10px 0;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    position: fixed;
+    width: 100%;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+}
+
+.navbar a {
+    float: left;
+    display: block;
+    color: #000; /* Color negro para los enlaces */
+    text-align: center;
+    padding: 14px 20px;
+    text-decoration: none;
+}
+
+.navbar a:hover {
+    background-color: #ddd; /* Color de fondo para hover */
+    color: black;
+}
+
+.container {
+    display: flex;
+    width: 80%;
+    background-color: #ffeb3b; /* Color amarillo para la caja */
+    padding: 20px;
+    border-radius: 10px; /* Bordes redondeados */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin: 70px auto 0 auto; /* Espacio superior para la barra de navegación fija */
+    flex-direction: column;
+}
+
+h2 {
+    color: #000; /* Color del texto negro */
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+button {
+    background-color: #000; /* Color negro para los botones */
+    color: #ffeb3b;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+button:hover {
+    background-color: #333; /* Color negro más oscuro al pasar el ratón */
+}
+
+a {
+    color: #000; /* Color negro para los enlaces */
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+}
+
+table th, table td {
+    padding: 10px;
+    border: 1px solid #ddd;
+    text-align: left;
+}
+
+.alert {
+    background-color: #ff4c4c; /* Color de alerta */
+    color: white;
+    padding: 10px;
+    margin-bottom: 20px;
+    border-radius: 5px;
+}
+
+ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+ul li {
+    background-color: #ffeb3b; /* Color amarillo para los elementos de la lista */
+    padding: 10px;
+    margin: 5px 0;
+    border-radius: 5px;
+}

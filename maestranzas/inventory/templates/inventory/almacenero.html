@@ -1,0 +1,81 @@
+{% extends 'inventory/base.html' %}
+
+{% load static %}
+{% load custom_filters %}
+
+{% block title %}Almacenero{% endblock %}
+
+{% block content %}
+<div class="left">
+    <h2>Registrar Nuevo Material</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ material_form.as_p }}
+        <button type="submit" name="add_material">Guardar</button>
+        {% if material_form.instance.id %}
+        <button type="submit" name="edit_material">Actualizar</button>
+        <input type="hidden" name="material_id" value="{{ material_form.instance.id }}">
+        {% endif %}
+    </form>
+</div>
+
+<div class="right">
+    <h2>Inventario</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Descripción</th>
+                <th>Cantidad</th>
+                <th>Ubicación</th>
+                <th>Registrado por</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for material in materials %}
+            <tr>
+                <td>{{ material.name }}</td>
+                <td>{{ material.description }}</td>
+                <td>{{ material.quantity }}</td>
+                <td>{{ material.location.name }}</td>
+                <td>{{ material.added_by.username }}</td>
+                <td>
+                    <a href="?edit_material&material_id={{ material.id }}">Editar</a>
+                    <form method="post" style="display:inline;">
+                        {% csrf_token %}
+                        <input type="hidden" name="material_id" value="{{ material.id }}">
+                        <button type="submit" name="delete_material">Eliminar</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <h2>Capacidad de Almacenamiento</h2>
+    <p>Total de materiales: {{ total_quantity }} / Capacidad máxima: {{ capacity_limit }}</p>
+    <p>Espacio disponible: {{ capacity_limit|subtract:total_quantity }}</p>
+
+    {% if alerts %}
+        <h2>Alertas de Almacenamiento</h2>
+        {% for alert in alerts %}
+        <div class="alert">
+            Alerta en {{ alert.location.name }}: creada por {{ alert.created_by.username }} el {{ alert.created_at }}
+            <form method="post" style="display:inline;">
+                {% csrf_token %}
+                <input type="hidden" name="alert_id" value="{{ alert.id }}">
+                <button type="submit" name="clear_alert">Eliminar Alerta</button>
+            </form>
+        </div>
+        {% endfor %}
+    {% endif %}
+
+    <h2>Ubicaciones</h2>
+    <ul>
+        {% for location in locations %}
+        <li>{{ location.name }}</li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}

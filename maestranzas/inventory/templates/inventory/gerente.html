@@ -1,0 +1,106 @@
+{% extends 'inventory/base.html' %}
+
+{% block title %}Gerente{% endblock %}
+
+{% block content %}
+<h2>Gerente</h2>
+
+<h3>Generar Informes por Categoría de Producto</h3>
+<form method="post" action="{% url 'generate_report' %}">
+    {% csrf_token %}
+    <input type="hidden" name="report_type" value="category">
+    <button type="submit" name="generate_report">Generar Informe</button>
+</form>
+
+<h3>Generar Informes de Estado de Inventario</h3>
+<form method="post" action="{% url 'generate_report' %}">
+    {% csrf_token %}
+    <input type="hidden" name="report_type" value="inventory_status">
+    <button type="submit" name="generate_report">Generar Informe</button>
+</form>
+
+<h3>Generar Informes Históricos</h3>
+<form method="post" action="{% url 'generate_report' %}">
+    {% csrf_token %}
+    <input type="hidden" name="report_type" value="historical">
+    <button type="submit" name="generate_report">Generar Informe</button>
+</form>
+
+<h3>Generar Informes por Criterios Específicos</h3>
+<form method="get" action="{% url 'gerente' %}">
+    {{ search_form.as_p }}
+    <button type="submit">Buscar</button>
+</form>
+<form method="post" action="{% url 'generate_report' %}">
+    {% csrf_token %}
+    <input type="hidden" name="report_type" value="specific">
+    <button type="submit" name="generate_report">Generar Informe</button>
+</form>
+
+<h3>Generación de Informes de Movimientos de Productos</h3>
+<form method="post" action="{% url 'generate_report' %}">
+    {% csrf_token %}
+    <input type="hidden" name="report_type" value="movements">
+    <button type="submit" name="generate_report">Generar Informe</button>
+</form>
+
+{% if report %}
+    <h3>Informe Generado</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Producto</th>
+                <th>Descripción</th>
+                <th>Cantidad</th>
+                <th>Ubicación</th>
+                <th>Fecha</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in report %}
+            <tr>
+                <td>{{ item.product.name }}</td>
+                <td>{{ item.product.description }}</td>
+                <td>{{ item.quantity }}</td>
+                <td>{{ item.location.name }}</td>
+                <td>{{ item.date }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endif %}
+
+<h3>Inventario y Ubicaciones Disponibles</h3>
+<table>
+    <thead>
+        <tr>
+            <th>Nombre</th>
+            <th>Descripción</th>
+            <th>Cantidad</th>
+            <th>Ubicación</th>
+            <th>Registrado por</th>
+            <th>Estado</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for material in materials %}
+        <tr>
+            <td>{{ material.name }}</td>
+            <td>{{ material.description }}</td>
+            <td>{{ material.quantity }}</td>
+            <td>{{ material.location.name }}</td>
+            <td>{{ material.added_by.username }}</td>
+            <td>{{ material.condition }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<h3>Ubicaciones</h3>
+<ul>
+    {% for location in locations %}
+    <li>{{ location.name }}: {{ location.total_quantity }} / {{ location.max_capacity }}</li>
+    {% endfor %}
+</ul>
+
+{% endblock %}

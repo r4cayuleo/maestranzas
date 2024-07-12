@@ -1,0 +1,102 @@
+{% extends 'inventory/base.html' %}
+
+{% block title %}Responsable de Almacén{% endblock %}
+
+{% block content %}
+    <h2>Responsable de Almacén</h2>
+    {% if capacity_alert %}
+        <div class="alert">{{ capacity_alert }}</div>
+    {% endif %}
+
+    <h2>Enviar Alerta de Almacenamiento</h2>
+    <form method="post">
+        {% csrf_token %}
+        <label for="alert_location_id">Seleccionar Ubicación:</label>
+        <select name="alert_location_id" id="alert_location_id">
+            {% for location in locations %}
+                <option value="{{ location.id }}">{{ location.name }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit" name="send_alert">Enviar Alerta</button>
+    </form>
+
+    <h2>Seleccionar Ubicación para Modificar Capacidad</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ location_select_form.as_p }}
+        <button type="submit" name="select_location">Seleccionar Ubicación</button>
+    </form>
+
+    {% if location_form %}
+    <h2>Modificar Capacidad Máxima</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ location_form.as_p }}
+        <input type="hidden" name="location_id" value="{{ location_form.instance.id }}">
+        <button type="submit" name="update_capacity">Actualizar Capacidad</button>
+    </form>
+    {% endif %}
+
+    <h2>Análisis de utilización del espacio de almacenamiento</h2>
+    <p>Total de materiales: {{ total_quantity }} / Capacidad máxima: {{ capacity_limit }}</p>
+
+    <h2>Buscar productos por ubicación</h2>
+    <form method="get">
+        {{ search_form.as_p }}
+        <button type="submit">Buscar</button>
+    </form>
+
+    <h2>Inventario por Ubicación</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Descripción</th>
+                <th>Cantidad</th>
+                <th>Ubicación</th>
+                <th>Registrado por</th>
+                <th>Alerta</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for material in materials %}
+            <tr>
+                <td>{{ material.name }}</td>
+                <td>{{ material.description }}</td>
+                <td>{{ material.quantity }}</td>
+                <td>{{ material.location.name }}</td>
+                <td>{{ material.added_by.username }}</td>
+                <td>
+                    {% if alert_location and material.location.id == alert_location %}
+                        <div class="alert">Alerta: La capacidad de almacenamiento está llena o por llenarse.</div>
+                        <form method="post" style="display:inline;">
+                            {% csrf_token %}
+                            <button type="submit" name="clear_alert">Eliminar Alerta</button>
+                        </form>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <h2>Capacidad por Ubicación</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Ubicación</th>
+                <th>Capacidad Usada</th>
+                <th>Capacidad Máxima</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for location in locations %}
+            <tr>
+                <td>{{ location.name }}</td>
+                <td>{{ location.total_quantity }}</td>
+                <td>{{ location.max_capacity }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
